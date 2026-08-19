@@ -9,30 +9,37 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <!-- Chart.js (グラフ描画用ライブラリ) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <!-- カスタムスタイルシート -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="min-h-screen flex flex-col relative overflow-x-hidden">
 
+  <!-- 緊急告知バナー -->
+  <div id="urgent-banner" class="hidden bg-gradient-to-r from-pink-500 via-purple-500 to-sky-500 text-white text-xs md:text-sm font-bold py-2.5 px-4 text-center relative shadow-md">
+    <span id="banner-text">🎉 1st Fan Event 'READY S2U' チケット1次先行受付スタート！</span>
+    <button id="btn-close-banner" class="absolute right-3 top-2.5 text-white/80 hover:text-white font-bold">✕</button>
+  </div>
+
   <!-- 0. ナビゲーションバー -->
-  <nav class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-sky-100 px-4 md:px-8 py-3 flex justify-between items-center">
+  <nav class="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b border-sky-100 px-4 md:px-8 py-3.5 flex justify-between items-center">
     <div class="flex items-center gap-2">
       <span class="text-xl md:text-2xl font-black text-sky-500 font-brand tracking-wider">HEARTS2HEARTS</span>
     </div>
     
-    <div class="flex items-center gap-3 md:gap-6 text-xs md:text-sm font-bold text-sky-700">
-      <a href="#news" class="hover:text-sky-400 transition">NEWS</a>
-      <a href="#movie" class="hover:text-sky-400 transition">MOVIE</a>
-      <a href="#discography" class="hover:text-sky-400 transition">DISCOGRAPHY</a>
-      <a href="#profile" class="hover:text-sky-400 transition">PROFILE</a>
+    <div class="flex items-center gap-3 md:gap-6 text-xs md:text-sm font-bold text-sky-700 font-accent">
+      <a href="#news" class="hover:text-sky-400 transition tracking-wider">NEWS</a>
+      <a href="#movie" class="hover:text-sky-400 transition tracking-wider">MOVIE</a>
+      <a href="#discography" class="hover:text-sky-400 transition tracking-wider">DISCOGRAPHY</a>
+      <a href="#profile" class="hover:text-sky-400 transition tracking-wider">PROFILE</a>
 
-      <!-- 管理者モード開くボタン -->
-      <button id="btn-open-admin" class="bg-sky-100 hover:bg-sky-200 text-sky-600 px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1">
-        <i class="fa-solid fa-lock text-sky-400"></i> 管理者
+      <button id="btn-open-admin" class="bg-sky-50 hover:bg-sky-100 text-sky-600 px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1 border border-sky-200/60">
+        <i class="fa-solid fa-gear text-sky-400"></i> 管理者
       </button>
 
-      <!-- 言語切替 -->
-      <select id="lang-select" class="bg-sky-50 border border-sky-200 text-xs text-sky-700 rounded-full px-2.5 py-1 font-bold focus:outline-none">
+      <select id="lang-select" class="bg-sky-50 border border-sky-200 text-xs text-sky-700 rounded-full px-2.5 py-1 font-bold focus:outline-none cursor-pointer">
         <option value="ja">JP</option>
         <option value="en">EN</option>
         <option value="ko">KR</option>
@@ -41,41 +48,37 @@
   </nav>
 
   <!-- 1. メインビジュアル -->
-  <header class="relative bg-gradient-header py-8 px-4 text-center border-b border-sky-100">
+  <header class="relative bg-gradient-header py-10 px-4 text-center border-b border-sky-100">
     <div class="max-w-5xl mx-auto">
-      <div class="relative w-full h-64 md:h-96 rounded-3xl overflow-hidden bg-sky-200 border-4 border-white shadow-lg flex items-center justify-center">
-        <div class="absolute inset-0 bg-gradient-to-t from-sky-900/60 via-transparent to-transparent z-10"></div>
+      <div id="main-hero-bg" class="relative w-full h-64 md:h-96 rounded-3xl overflow-hidden bg-sky-200 bg-cover bg-center border-4 border-white shadow-xl flex items-center justify-center transition-all duration-300">
+        <div class="absolute inset-0 bg-gradient-to-t from-sky-950/80 via-sky-900/30 to-transparent z-10"></div>
         <div class="z-20 text-white p-6 flex flex-col items-center justify-end h-full">
-          <span class="bg-white/20 backdrop-blur-md text-white text-xs px-3 py-1 rounded-full mb-2 font-bold tracking-widest">JAPAN OFFICIAL FAN SITE</span>
-          <h1 class="text-3xl md:text-5xl font-black font-brand tracking-tight drop-shadow-md">HEARTS2HEARTS</h1>
-          <p id="bias-welcome-msg" class="text-sky-100 text-xs md:text-sm font-bold mt-1">Hearts2Hearts Official Fan Community 🩵</p>
-        </div>
-        <div class="absolute inset-0 flex items-center justify-center opacity-30 text-sky-400 text-8xl font-black select-none">
-          🩵 S2U 🩵
+          <span class="bg-white/25 backdrop-blur-md text-white text-[11px] px-3.5 py-1 rounded-full mb-2 font-black font-accent tracking-widest border border-white/30">JAPAN OFFICIAL FAN SITE</span>
+          <h1 class="text-3xl md:text-6xl font-black font-brand tracking-tight drop-shadow-lg">HEARTS2HEARTS</h1>
+          <p id="bias-welcome-msg" class="text-sky-100 text-xs md:text-sm font-bold mt-2">Hearts2Hearts Official Fan Community 🩵</p>
         </div>
       </div>
     </div>
   </header>
 
   <!-- 2. NEWS セクション -->
-  <section id="news" class="bg-pattern-news py-12 px-4 md:px-8 relative border-b border-sky-200">
+  <section id="news" class="bg-pattern-news py-14 px-4 md:px-8 relative border-b border-sky-200">
     <div class="max-w-4xl mx-auto bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-8 card-shadow border-2 border-white">
       <div class="flex justify-between items-center mb-6">
         <div class="flex items-center gap-3">
-          <div class="bg-sky-500 text-white font-black px-3 py-1 rounded-lg text-lg md:text-xl font-brand">NEWS</div>
+          <div class="bg-gradient-to-r from-sky-500 to-sky-400 text-white font-black px-3.5 py-1 rounded-xl text-lg md:text-xl font-brand tracking-wider">NEWS</div>
           <span class="text-xs text-sky-400 font-bold hidden md:inline">最新の公式情報・リリース情報</span>
         </div>
         
-        <button id="btn-sync-news" class="pill-btn text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+        <button id="btn-sync-news" class="pill-btn text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
           <i class="fa-solid fa-arrows-rotate text-sky-400"></i> 自動更新を取得
         </button>
       </div>
 
-      <!-- ニュースリスト表示枠 -->
       <div class="space-y-3" id="news-list"></div>
 
-      <div class="text-center mt-6">
-        <button onclick="alert('全ニュース一覧ページへ移動します')" class="pill-btn px-8 py-2 rounded-full font-bold text-xs shadow-sm font-brand uppercase tracking-wider">
+      <div class="text-center mt-7">
+        <button onclick="alert('全ニュース一覧ページへ移動します')" class="pill-btn px-8 py-2.5 rounded-full font-bold text-xs shadow-sm font-accent tracking-wider">
           VIEW ALL ➔
         </button>
       </div>
@@ -83,67 +86,40 @@
   </section>
 
   <!-- 3. MOVIE セクション -->
-  <section id="movie" class="py-12 px-4 md:px-8 max-w-6xl mx-auto">
-    <div class="flex items-center gap-3 mb-6">
-      <h2 class="text-2xl md:text-3xl font-black text-sky-600 font-brand tracking-wide">Movie</h2>
+  <section id="movie" class="py-14 px-4 md:px-8 max-w-6xl mx-auto">
+    <div class="flex items-center gap-3 mb-8">
+      <h2 class="text-3xl md:text-4xl font-black text-gradient font-brand tracking-wide">Movie</h2>
       <span class="text-xs text-sky-400 font-bold">公式ミュージックビデオ・動画</span>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-white rounded-2xl overflow-hidden border border-sky-100 card-shadow hover:-translate-y-1 transition duration-200">
-        <div class="aspect-video bg-sky-100 relative">
-          <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Movie 1" frameborder="0" allowfullscreen></iframe>
-        </div>
-        <div class="p-3 bg-white">
-          <p class="text-xs font-bold text-sky-800 line-clamp-1">Hearts2Hearts 'FOCUS' MV</p>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-2xl overflow-hidden border border-sky-100 card-shadow hover:-translate-y-1 transition duration-200">
-        <div class="aspect-video bg-sky-100 relative">
-          <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Movie 2" frameborder="0" allowfullscreen></iframe>
-        </div>
-        <div class="p-3 bg-white">
-          <p class="text-xs font-bold text-sky-800 line-clamp-1">Hearts2Hearts 'The Chase' Official MV</p>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-2xl overflow-hidden border border-sky-100 card-shadow hover:-translate-y-1 transition duration-200">
-        <div class="aspect-video bg-sky-100 relative">
-          <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Movie 3" frameborder="0" allowfullscreen></iframe>
-        </div>
-        <div class="p-3 bg-white">
-          <p class="text-xs font-bold text-sky-800 line-clamp-1">Hearts2Hearts 1st Fan Event 'READY S2U' Teaser</p>
-        </div>
-      </div>
-    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="movie-grid"></div>
   </section>
 
   <!-- 4. DISCOGRAPHY セクション -->
-  <section id="discography" class="py-12 px-4 md:px-8 bg-gradient-to-r from-amber-50 via-pink-50 to-sky-50 border-y border-sky-100">
+  <section id="discography" class="py-14 px-4 md:px-8 bg-gradient-to-r from-amber-50/60 via-pink-50/60 to-sky-50/60 border-y border-sky-100">
     <div class="max-w-5xl mx-auto">
-      <div class="flex items-center gap-3 mb-6">
-        <h2 class="text-2xl md:text-3xl font-black text-sky-600 font-brand">Disco Graphy</h2>
+      <div class="flex items-center gap-3 mb-8">
+        <h2 class="text-3xl md:text-4xl font-black text-gradient font-brand">Disco Graphy</h2>
       </div>
 
-      <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 md:p-8 card-shadow border border-white flex flex-col md:flex-row items-center gap-8">
-        <div class="w-48 h-48 md:w-64 md:h-64 bg-sky-100 rounded-2xl border-4 border-white shadow-md flex-shrink-0 flex flex-col items-center justify-center relative overflow-hidden">
+      <div class="bg-white/85 backdrop-blur-md rounded-3xl p-6 md:p-8 card-shadow border border-white flex flex-col md:flex-row items-center gap-8">
+        <div class="w-48 h-48 md:w-64 md:h-64 bg-sky-100/70 rounded-2xl border-4 border-white shadow-md flex-shrink-0 flex flex-col items-center justify-center relative overflow-hidden">
           <div class="text-center p-4">
-            <span class="text-4xl">💿</span>
-            <p class="text-xs font-bold text-sky-400 mt-2">ICONIC HEART</p>
-            <p class="text-[10px] text-sky-300">Jacket Image Frame</p>
+            <span class="text-5xl">💿</span>
+            <p class="text-xs font-bold text-sky-500 font-brand mt-3 tracking-wide">ICONIC HEART</p>
+            <p class="text-[10px] text-sky-400 font-accent mt-0.5">Jacket Image Frame</p>
           </div>
         </div>
 
         <div class="flex-1 text-center md:text-left">
-          <span class="bg-amber-100 text-amber-600 font-bold text-xs px-3 py-1 rounded-full">NEW</span>
-          <h3 class="text-2xl md:text-3xl font-black text-sky-800 font-brand mt-2">ICONIC HEART [通常盤]</h3>
-          <p class="text-xs text-sky-500 font-bold mt-1">RELEASE SHOWCASE</p>
-          <p class="text-xs text-sky-700 leading-relaxed mt-4 bg-sky-50/60 p-4 rounded-xl border border-sky-100">
+          <span class="bg-amber-100 text-amber-600 font-black text-[11px] px-3 py-1 rounded-full font-accent">NEW</span>
+          <h3 class="text-2xl md:text-3xl font-black text-sky-900 font-brand mt-2">ICONIC HEART [通常盤]</h3>
+          <p class="text-xs text-sky-500 font-bold font-accent mt-1">2026.06.22 RELEASE</p>
+          <p class="text-xs md:text-sm text-sky-800 leading-relaxed mt-4 bg-sky-50/70 p-4 rounded-2xl border border-sky-100/80">
             Hearts2Heartsの最新シングル『ICONIC HEART』。S2Uへ贈る明るくキュートなポップナンバー！
           </p>
           <div class="mt-6 flex flex-wrap gap-3 justify-center md:justify-start">
-            <button onclick="alert('DISCOGRAPHY詳細を表示します')" class="pill-btn px-6 py-2 rounded-full font-bold text-xs uppercase tracking-wider">
+            <button onclick="alert('DISCOGRAPHY詳細を表示します')" class="pill-btn px-7 py-2.5 rounded-full font-bold text-xs font-accent tracking-wider">
               VIEW ALL ➔
             </button>
           </div>
@@ -152,84 +128,193 @@
     </div>
   </section>
 
-  <!-- 5. PROFILE セクション (2行×4列) -->
-  <section id="profile" class="py-12 px-4 md:px-8 max-w-6xl mx-auto">
-    <div class="text-center mb-8">
-      <h2 class="text-3xl md:text-4xl font-black text-sky-600 font-brand">Profile</h2>
-      <p class="text-xs text-sky-400 font-bold mt-1">Hearts2Hearts メンバープロフィール</p>
+  <!-- 5. PROFILE セクション -->
+  <section id="profile" class="py-14 px-4 md:px-8 max-w-6xl mx-auto">
+    <div class="text-center mb-10">
+      <h2 class="text-3xl md:text-5xl font-black text-gradient font-brand">Profile</h2>
+      <p class="text-xs text-sky-400 font-bold mt-1.5">Hearts2Hearts メンバープロフィール</p>
     </div>
 
-    <!-- 2行 × 4列 グリッド -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6" id="profile-grid"></div>
 
-    <div class="text-center mt-8">
-      <button onclick="alert('全メンバープロフィールを表示します')" class="pill-btn px-8 py-2.5 rounded-full font-bold text-xs shadow-sm font-brand uppercase tracking-wider">
+    <div class="text-center mt-10">
+      <button onclick="alert('全メンバープロフィールを表示します')" class="pill-btn px-8 py-2.5 rounded-full font-bold text-xs shadow-sm font-accent tracking-wider">
         VIEW ALL ➔
       </button>
     </div>
   </section>
 
-  <!-- 6. 管理者モード モーダル -->
-  <div id="admin-modal" class="fixed inset-0 bg-sky-950/40 z-50 flex items-center justify-center p-4 backdrop-blur-md hidden">
-    <div class="bg-white border-2 border-sky-200 rounded-3xl p-6 max-w-lg w-full shadow-2xl relative">
-      <div class="flex justify-between items-center mb-4 border-b border-sky-100 pb-3">
-        <h3 class="text-base font-bold text-sky-700 flex items-center gap-2">
-          <i class="fa-solid fa-sliders text-sky-400"></i> 管理者ダッシュボード
+  <!-- 6. 🔥 高機能管理者モード モーダル -->
+  <div id="admin-modal" class="fixed inset-0 bg-sky-950/50 z-50 flex items-center justify-center p-4 backdrop-blur-md hidden">
+    <div class="bg-white border-2 border-sky-200 rounded-3xl p-6 max-w-2xl w-full shadow-2xl relative max-h-[90vh] flex flex-col">
+      <div class="flex justify-between items-center border-b border-sky-100 pb-3 mb-4">
+        <h3 class="text-base font-black text-sky-700 flex items-center gap-2 font-accent">
+          <i class="fa-solid fa-sliders text-sky-500"></i> 管理者コントロールセンター
         </h3>
         <button id="btn-close-admin" class="text-sky-400 hover:text-sky-600 font-bold text-lg">✕</button>
       </div>
 
-      <!-- 認証フォーム -->
-      <div id="admin-login-view">
-        <p class="text-xs text-sky-500 mb-4">管理用パスワードを入力してください（初期パスワード: <code class="bg-sky-100 px-1 py-0.5 rounded text-sky-700 font-mono">admin123</code>）</p>
-        <input type="password" id="admin-pass" placeholder="パスワード" class="w-full px-4 py-2 text-sm border border-sky-200 rounded-xl mb-4 focus:outline-none focus:ring-2 focus:ring-sky-300">
+      <!-- パスワード認証画面 -->
+      <div id="admin-login-view" class="py-4">
+        <p class="text-xs text-sky-600 mb-3 font-bold">パスワードを入力してください（初期キー: <code class="bg-sky-100 px-1.5 py-0.5 rounded text-sky-800 font-mono">admin123</code>）</p>
+        <input type="password" id="admin-pass" placeholder="パスワード" class="w-full px-4 py-2.5 text-sm border border-sky-200 rounded-xl mb-4 focus:outline-none focus:ring-2 focus:ring-sky-300">
         <button id="btn-login-admin" class="w-full py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl text-xs transition">ログイン</button>
       </div>
 
-      <!-- 管理投稿パネル -->
-      <div id="admin-panel-view" class="hidden">
-        <h4 class="text-xs font-bold text-sky-700 mb-3">＋ ニュースを手動で追加・更新</h4>
-        <div class="space-y-3 mb-4">
-          <input type="text" id="admin-news-title" placeholder="ニュースタイトル（例: 〇〇番組出演決定！）" class="w-full px-3 py-2 text-xs border border-sky-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-300">
-          <textarea id="admin-news-body" placeholder="詳細テキストや公式サイトリンクなど" rows="3" class="w-full px-3 py-2 text-xs border border-sky-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-300"></textarea>
-          <select id="admin-news-badge" class="w-full px-3 py-2 text-xs border border-sky-200 rounded-lg text-sky-700 font-bold">
-            <option value="NEW">NEW（新着）</option>
-            <option value="RELEASE">RELEASE（リリース情報）</option>
-            <option value="EVENT">EVENT（イベント・ライブ）</option>
-          </select>
+      <!-- 管理者ダッシュボード本体 -->
+      <div id="admin-panel-view" class="hidden flex-1 overflow-y-auto pr-1">
+        <!-- タブ切替ナビ -->
+        <div class="flex border-b border-sky-200 mb-4 gap-1 overflow-x-auto pb-1">
+          <button class="admin-tab active" data-tab="tab-analytics">📊 アクセス解析</button>
+          <button class="admin-tab" data-tab="tab-images">🖼 画像設定</button>
+          <button class="admin-tab" data-tab="tab-news">ニュース管理</button>
+          <button class="admin-tab" data-tab="tab-member">メンバー編集</button>
+          <button class="admin-tab" data-tab="tab-movie">動画追加</button>
+          <button class="admin-tab" data-tab="tab-banner">緊急バナー</button>
         </div>
-        <button id="btn-add-news" class="w-full py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl text-xs transition">トップ画面のニュースに反映 🚀</button>
+
+        <!-- タブ0: 🔥 アクセス解析 (新規追加) -->
+        <div id="tab-analytics" class="admin-tab-content">
+          <div class="grid grid-cols-3 gap-3 mb-4">
+            <div class="bg-sky-50 p-3 rounded-2xl border border-sky-100 text-center">
+              <span class="text-[10px] text-sky-400 font-bold block">本日の訪問者</span>
+              <span id="analytics-today" class="text-xl font-black text-sky-700 font-accent">0</span>
+            </div>
+            <div class="bg-sky-50 p-3 rounded-2xl border border-sky-100 text-center">
+              <span class="text-[10px] text-sky-400 font-bold block">総PV（ページビュー）</span>
+              <span id="analytics-total" class="text-xl font-black text-sky-700 font-accent">0</span>
+            </div>
+            <div class="bg-sky-50 p-3 rounded-2xl border border-sky-100 text-center">
+              <span class="text-[10px] text-sky-400 font-bold block">アクティブユーザー</span>
+              <span class="text-xl font-black text-emerald-500 font-accent">1</span>
+            </div>
+          </div>
+
+          <h4 class="text-xs font-bold text-sky-800 mb-2">📈 週間アクセス推移</h4>
+          <div class="bg-white p-3 rounded-2xl border border-sky-100 shadow-sm mb-4">
+            <canvas id="accessChart" class="w-full max-h-48"></canvas>
+          </div>
+        </div>
+
+        <!-- タブ1: 🔥 画像設定 (新規追加) -->
+        <div id="tab-images" class="admin-tab-content hidden space-y-4">
+          <!-- トップヘッダー背景画像 -->
+          <div class="bg-sky-50/50 p-3.5 rounded-2xl border border-sky-100">
+            <h4 class="text-xs font-bold text-sky-800 mb-2">🏞 トップヘッダー背景画像の変更</h4>
+            <div class="space-y-2">
+              <input type="text" id="admin-hero-img-url" placeholder="画像URL（例: https://example.com/hero.jpg）" class="w-full px-3 py-2 text-xs border border-sky-200 rounded-xl">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] text-sky-400">またはファイル選択:</span>
+                <input type="file" id="admin-hero-img-file" accept="image/*" class="text-xs text-sky-600">
+              </div>
+              <button id="btn-save-hero-img" class="w-full py-1.5 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl text-xs transition">トップ画像を反映</button>
+            </div>
+          </div>
+
+          <!-- メンバー写真変更 -->
+          <div class="bg-sky-50/50 p-3.5 rounded-2xl border border-sky-100">
+            <h4 class="text-xs font-bold text-sky-800 mb-2">👤 メンバー写真の変更</h4>
+            <div class="space-y-2">
+              <select id="admin-member-img-select" class="w-full px-3 py-2 text-xs border border-sky-200 rounded-xl font-bold text-sky-700"></select>
+              <input type="text" id="admin-member-img-url" placeholder="画像URLを入力" class="w-full px-3 py-2 text-xs border border-sky-200 rounded-xl">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] text-sky-400">またはファイル選択:</span>
+                <input type="file" id="admin-member-img-file" accept="image/*" class="text-xs text-sky-600">
+              </div>
+              <button id="btn-save-member-img" class="w-full py-1.5 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl text-xs transition">メンバー写真を更新</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- タブ2: ニュース -->
+        <div id="tab-news" class="admin-tab-content hidden">
+          <h4 class="text-xs font-bold text-sky-800 mb-2">＋ 新規ニュースを追加</h4>
+          <div class="space-y-2 mb-4">
+            <input type="text" id="admin-news-title" placeholder="ニュースタイトル" class="w-full px-3 py-2 text-xs border border-sky-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-300">
+            <select id="admin-news-badge" class="w-full px-3 py-2 text-xs border border-sky-200 rounded-xl text-sky-700 font-bold">
+              <option value="NEW">NEW（新着）</option>
+              <option value="RELEASE">RELEASE（リリース）</option>
+              <option value="EVENT">EVENT（イベント）</option>
+              <option value="INFO">INFO（お知らせ）</option>
+            </select>
+            <button id="btn-add-news" class="w-full py-2 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl text-xs transition">ニュースを追加 🚀</button>
+          </div>
+
+          <h4 class="text-xs font-bold text-sky-800 mb-2">🗑 既存ニュースの削除</h4>
+          <div id="admin-news-manage-list" class="space-y-1.5 max-h-36 overflow-y-auto p-1 bg-sky-50/50 rounded-xl border border-sky-100"></div>
+        </div>
+
+        <!-- タブ3: メンバーテキスト編集 -->
+        <div id="tab-member" class="admin-tab-content hidden">
+          <h4 class="text-xs font-bold text-sky-800 mb-2">メンバーの絵文字・ひ言更新</h4>
+          <div class="space-y-3">
+            <select id="admin-member-select" class="w-full px-3 py-2 text-xs border border-sky-200 rounded-xl font-bold text-sky-700"></select>
+            <div class="flex gap-2">
+              <input type="text" id="admin-member-emoji" placeholder="絵文字（例: 🎀）" class="w-24 px-3 py-2 text-xs border border-sky-200 rounded-xl">
+              <input type="text" id="admin-member-comment" placeholder="ひと言コメント" class="flex-1 px-3 py-2 text-xs border border-sky-200 rounded-xl">
+            </div>
+            <button id="btn-update-member" class="w-full py-2 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl text-xs transition">メンバー情報を更新 ✨</button>
+          </div>
+        </div>
+
+        <!-- タブ4: Movie追加 -->
+        <div id="tab-movie" class="admin-tab-content hidden">
+          <h4 class="text-xs font-bold text-sky-800 mb-2">＋ 新しいYouTube動画を埋め込み</h4>
+          <div class="space-y-2">
+            <input type="text" id="admin-movie-title" placeholder="動画タイトル（例: 'FOCUS' MV）" class="w-full px-3 py-2 text-xs border border-sky-200 rounded-xl">
+            <input type="text" id="admin-movie-url" placeholder="YouTube動画ID または URL (例: dQw4w9WgXcQ)" class="w-full px-3 py-2 text-xs border border-sky-200 rounded-xl">
+            <button id="btn-add-movie" class="w-full py-2 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl text-xs transition">Movieに追加 🎬</button>
+          </div>
+        </div>
+
+        <!-- タブ5: 緊急バナー管理 -->
+        <div id="tab-banner" class="admin-tab-content hidden">
+          <h4 class="text-xs font-bold text-sky-800 mb-2">最上部・緊急お知らせバナー設定</h4>
+          <div class="space-y-3">
+            <input type="text" id="admin-banner-text" placeholder="表示するバナーテキスト" class="w-full px-3 py-2 text-xs border border-sky-200 rounded-xl">
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="admin-banner-enable" class="w-4 h-4 rounded text-sky-500">
+              <label for="admin-banner-enable" class="text-xs font-bold text-sky-700">バナーを表示する</label>
+            </div>
+            <button id="btn-save-banner" class="w-full py-2 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl text-xs transition">バナー設定を適用 📢</button>
+          </div>
+        </div>
+
+        <!-- 全初期化ボタン -->
+        <div class="mt-6 pt-4 border-t border-sky-100 flex justify-between items-center">
+          <button id="btn-reset-data" class="text-[11px] text-red-400 hover:text-red-600 font-bold underline">⚠ 初期データに戻す</button>
+          <button id="btn-logout-admin" class="px-3 py-1 bg-sky-100 text-sky-600 rounded-lg text-xs font-bold hover:bg-sky-200 transition">ログアウト</button>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- 7. フッター -->
-  <footer class="bg-sky-100 border-t border-sky-200 py-10 px-4 text-center mt-auto">
+  <footer class="bg-sky-100/70 border-t border-sky-200 py-10 px-4 text-center mt-auto">
     <div class="max-w-4xl mx-auto space-y-6">
       <h2 class="text-2xl font-black text-sky-500 font-brand tracking-wider">HEARTS2HEARTS</h2>
       
-      <div class="flex flex-wrap justify-center gap-2 md:gap-3 text-xs font-bold text-sky-700">
-        <a href="#news" class="bg-white/80 px-3 py-1 rounded-full hover:bg-white transition">NEWS</a>
-        <a href="#movie" class="bg-white/80 px-3 py-1 rounded-full hover:bg-white transition">MOVIE</a>
-        <a href="#discography" class="bg-white/80 px-3 py-1 rounded-full hover:bg-white transition">DISCOGRAPHY</a>
-        <a href="#profile" class="bg-white/80 px-3 py-1 rounded-full hover:bg-white transition">PROFILE</a>
-        <a href="https://hearts2heartsofficial.jp/" target="_blank" class="bg-white/80 px-3 py-1 rounded-full hover:bg-white transition">FANCLUB</a>
+      <div class="flex flex-wrap justify-center gap-2 md:gap-3 text-xs font-bold text-sky-700 font-accent">
+        <a href="#news" class="bg-white/80 px-3.5 py-1 rounded-full hover:bg-white transition">NEWS</a>
+        <a href="#movie" class="bg-white/80 px-3.5 py-1 rounded-full hover:bg-white transition">MOVIE</a>
+        <a href="#discography" class="bg-white/80 px-3.5 py-1 rounded-full hover:bg-white transition">DISCOGRAPHY</a>
+        <a href="#profile" class="bg-white/80 px-3.5 py-1 rounded-full hover:bg-white transition">PROFILE</a>
+        <a href="https://hearts2heartsofficial.jp/" target="_blank" class="bg-white/80 px-3.5 py-1 rounded-full hover:bg-white transition">FANCLUB</a>
       </div>
 
-      <div class="flex justify-center gap-4 text-sky-600 text-lg">
+      <div class="flex justify-center gap-5 text-sky-600 text-lg">
         <a href="https://hearts2heartsofficial.jp/" target="_blank" class="hover:text-sky-400 transition"><i class="fa-brands fa-x-twitter"></i></a>
         <a href="https://hearts2heartsofficial.jp/" target="_blank" class="hover:text-sky-400 transition"><i class="fa-brands fa-instagram"></i></a>
         <a href="https://hearts2heartsofficial.jp/" target="_blank" class="hover:text-sky-400 transition"><i class="fa-brands fa-tiktok"></i></a>
         <a href="https://hearts2heartsofficial.jp/" target="_blank" class="hover:text-sky-400 transition"><i class="fa-brands fa-youtube"></i></a>
       </div>
 
-      <p class="text-[11px] text-sky-400 font-bold">
+      <p class="text-[11px] text-sky-400 font-bold font-accent">
         © Hearts2Hearts Official Fan Site. Inspired by hearts2heartsofficial.jp
       </p>
     </div>
   </footer>
 
-  <!-- カスタムJavaScript -->
   <script src="script.js"></script>
 </body>
 </html>
