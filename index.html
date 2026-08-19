@@ -3,222 +3,233 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hearts2Hearts (H2H) Official Fan Site</title>
+  <title>Hearts2Hearts Japan Official Fan Site</title>
+  
   <!-- Tailwind CSS & FontAwesome Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Noto+Sans+JP:wght@300;400;700&display=swap');
-    body { font-family: 'Montserrat', 'Noto Sans JP', sans-serif; }
-    .cheer-highlight { background-color: rgba(236, 72, 153, 0.3); border-radius: 4px; padding: 0 4px; font-weight: bold; color: #f472b6; }
-  </style>
+  
+  <!-- カスタムスタイルシート -->
+  <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-black text-gray-100 min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col relative overflow-x-hidden">
 
-  <!-- 1. 初回訪問時：推しメン選択モーダル -->
-  <div id="bias-modal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-md">
-    <div class="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 max-w-lg w-full text-center shadow-2xl">
-      <h2 class="text-2xl font-bold mb-2 tracking-widest text-white">WELCOME TO H2H FAN SITE</h2>
-      <p class="text-gray-400 text-sm mb-6" data-i18n="select-bias-title">あなたの推しメン（BIAS）を選択してください！</p>
-      <div class="grid grid-cols-4 gap-3 mb-6" id="bias-options">
-        <!-- JSでメンバー選択ボタンを生成 -->
-      </div>
-      <button onclick="closeModal()" class="w-full py-3 bg-white text-black font-bold rounded-lg hover:bg-gray-200 transition">ENTER SITE</button>
+  <!-- 0. ナビゲーションバー -->
+  <nav class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-sky-100 px-4 md:px-8 py-3 flex justify-between items-center">
+    <div class="flex items-center gap-2">
+      <span class="text-xl md:text-2xl font-black text-sky-500 font-brand tracking-wider">HEARTS2HEARTS</span>
     </div>
-  </div>
+    
+    <div class="flex items-center gap-3 md:gap-6 text-xs md:text-sm font-bold text-sky-700">
+      <a href="#news" class="hover:text-sky-400 transition">NEWS</a>
+      <a href="#movie" class="hover:text-sky-400 transition">MOVIE</a>
+      <a href="#discography" class="hover:text-sky-400 transition">DISCOGRAPHY</a>
+      <a href="#profile" class="hover:text-sky-400 transition">PROFILE</a>
 
-  <!-- ナビゲーションバー -->
-  <nav class="sticky top-0 z-40 bg-black/80 backdrop-blur-md border-b border-neutral-800 px-6 py-4 flex justify-between items-center">
-    <div class="text-xl font-extrabold tracking-widest text-white">HEARTS2HEARTS</div>
-    <div class="flex items-center gap-6 text-sm font-semibold">
-      <a href="#members" class="hover:text-pink-400 transition" data-i18n="nav-members">MEMBERS</a>
-      <a href="#fancheer" class="hover:text-pink-400 transition" data-i18n="nav-cheer">応援法</a>
-      <a href="#discography" class="hover:text-pink-400 transition" data-i18n="nav-disco">DISCOGRAPHY</a>
-      
-      <!-- 多言語切替ドロップダウン -->
-      <select id="lang-select" onchange="changeLanguage(this.value)" class="bg-neutral-900 border border-neutral-700 text-xs text-white rounded px-2 py-1">
-        <option value="ja">日本語</option>
-        <option value="en">English</option>
-        <option value="ko">한국어</option>
+      <!-- 管理者モード開くボタン -->
+      <button id="btn-open-admin" class="bg-sky-100 hover:bg-sky-200 text-sky-600 px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1">
+        <i class="fa-solid fa-lock text-sky-400"></i> 管理者
+      </button>
+
+      <!-- 言語切替 -->
+      <select id="lang-select" class="bg-sky-50 border border-sky-200 text-xs text-sky-700 rounded-full px-2.5 py-1 font-bold focus:outline-none">
+        <option value="ja">JP</option>
+        <option value="en">EN</option>
+        <option value="ko">KR</option>
       </select>
     </div>
   </nav>
 
-  <!-- ヒーローセクション / バナー -->
-  <header class="relative h-[60vh] flex flex-col items-center justify-center text-center p-6 bg-gradient-to-b from-neutral-900 to-black">
-    <span class="text-xs tracking-widest text-pink-500 font-bold mb-2">OFFICIAL FAN COMMUNITY</span>
-    <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-4">HEARTS2HEARTS</h1>
-    <p id="bias-welcome-msg" class="text-gray-400 text-lg mb-6">S2U（ファン）のための総合データ＆コミュニティサイト</p>
-
-    <!-- 誕生日カウントダウン -->
-    <div class="bg-neutral-900/80 border border-neutral-800 rounded-xl px-6 py-3 flex items-center gap-4 shadow-lg">
-      <i class="fa-solid font-bold text-pink-500 fa-cake-candles"></i>
-      <div class="text-left text-xs">
-        <div class="text-gray-400" data-i18n="next-bday">次のメンバー誕生日まで</div>
-        <div id="bday-timer" class="font-bold text-base text-white">Loading...</div>
+  <!-- 1. メインビジュアル -->
+  <header class="relative bg-gradient-header py-8 px-4 text-center border-b border-sky-100">
+    <div class="max-w-5xl mx-auto">
+      <div class="relative w-full h-64 md:h-96 rounded-3xl overflow-hidden bg-sky-200 border-4 border-white shadow-lg flex items-center justify-center">
+        <div class="absolute inset-0 bg-gradient-to-t from-sky-900/60 via-transparent to-transparent z-10"></div>
+        <div class="z-20 text-white p-6 flex flex-col items-center justify-end h-full">
+          <span class="bg-white/20 backdrop-blur-md text-white text-xs px-3 py-1 rounded-full mb-2 font-bold tracking-widest">JAPAN OFFICIAL FAN SITE</span>
+          <h1 class="text-3xl md:text-5xl font-black font-brand tracking-tight drop-shadow-md">HEARTS2HEARTS</h1>
+          <p id="bias-welcome-msg" class="text-sky-100 text-xs md:text-sm font-bold mt-1">Hearts2Hearts Official Fan Community 🩵</p>
+        </div>
+        <div class="absolute inset-0 flex items-center justify-center opacity-30 text-sky-400 text-8xl font-black select-none">
+          🩵 S2U 🩵
+        </div>
       </div>
     </div>
   </header>
 
-  <!-- 2. メンバープロフィール＆ケミ図鑑 -->
-  <section id="members" class="max-w-6xl mx-auto px-6 py-16">
-    <div class="flex justify-between items-end mb-8">
-      <div>
-        <h2 class="text-3xl font-bold tracking-wider text-white">MEMBERS</h2>
-        <p class="text-gray-400 text-sm">メンバー一覧 &amp; ポジション</p>
+  <!-- 2. NEWS セクション -->
+  <section id="news" class="bg-pattern-news py-12 px-4 md:px-8 relative border-b border-sky-200">
+    <div class="max-w-4xl mx-auto bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-8 card-shadow border-2 border-white">
+      <div class="flex justify-between items-center mb-6">
+        <div class="flex items-center gap-3">
+          <div class="bg-sky-500 text-white font-black px-3 py-1 rounded-lg text-lg md:text-xl font-brand">NEWS</div>
+          <span class="text-xs text-sky-400 font-bold hidden md:inline">最新の公式情報・リリース情報</span>
+        </div>
+        
+        <button id="btn-sync-news" class="pill-btn text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+          <i class="fa-solid fa-arrows-rotate text-sky-400"></i> 自動更新を取得
+        </button>
       </div>
-    </div>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6" id="member-cards">
-      <!-- JSでメンバーカードを生成 -->
+
+      <!-- ニュースリスト表示枠 -->
+      <div class="space-y-3" id="news-list"></div>
+
+      <div class="text-center mt-6">
+        <button onclick="alert('全ニュース一覧ページへ移動します')" class="pill-btn px-8 py-2 rounded-full font-bold text-xs shadow-sm font-brand uppercase tracking-wider">
+          VIEW ALL ➔
+        </button>
+      </div>
     </div>
   </section>
 
-  <!-- 3. インタラクティブ歌詞＆掛け声（応援法） -->
-  <section id="fancheer" class="bg-neutral-950 py-16 border-y border-neutral-900">
-    <div class="max-w-4xl mx-auto px-6">
-      <h2 class="text-3xl font-bold tracking-wider text-white mb-2">FAN CHEERING GUIDE</h2>
-      <p class="text-gray-400 text-sm mb-8">かけ声（応援法）解説 &amp; 公式動画</p>
+  <!-- 3. MOVIE セクション -->
+  <section id="movie" class="py-12 px-4 md:px-8 max-w-6xl mx-auto">
+    <div class="flex items-center gap-3 mb-6">
+      <h2 class="text-2xl md:text-3xl font-black text-sky-600 font-brand tracking-wide">Movie</h2>
+      <span class="text-xs text-sky-400 font-bold">公式ミュージックビデオ・動画</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-2xl overflow-hidden border border-sky-100 card-shadow hover:-translate-y-1 transition duration-200">
+        <div class="aspect-video bg-sky-100 relative">
+          <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Movie 1" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="p-3 bg-white">
+          <p class="text-xs font-bold text-sky-800 line-clamp-1">Hearts2Hearts 'FOCUS' MV</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl overflow-hidden border border-sky-100 card-shadow hover:-translate-y-1 transition duration-200">
+        <div class="aspect-video bg-sky-100 relative">
+          <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Movie 2" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="p-3 bg-white">
+          <p class="text-xs font-bold text-sky-800 line-clamp-1">Hearts2Hearts 'The Chase' Official MV</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl overflow-hidden border border-sky-100 card-shadow hover:-translate-y-1 transition duration-200">
+        <div class="aspect-video bg-sky-100 relative">
+          <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Movie 3" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="p-3 bg-white">
+          <p class="text-xs font-bold text-sky-800 line-clamp-1">Hearts2Hearts 1st Fan Event 'READY S2U' Teaser</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. DISCOGRAPHY セクション -->
+  <section id="discography" class="py-12 px-4 md:px-8 bg-gradient-to-r from-amber-50 via-pink-50 to-sky-50 border-y border-sky-100">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex items-center gap-3 mb-6">
+        <h2 class="text-2xl md:text-3xl font-black text-sky-600 font-brand">Disco Graphy</h2>
+      </div>
+
+      <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 md:p-8 card-shadow border border-white flex flex-col md:flex-row items-center gap-8">
+        <div class="w-48 h-48 md:w-64 md:h-64 bg-sky-100 rounded-2xl border-4 border-white shadow-md flex-shrink-0 flex flex-col items-center justify-center relative overflow-hidden">
+          <div class="text-center p-4">
+            <span class="text-4xl">💿</span>
+            <p class="text-xs font-bold text-sky-400 mt-2">ICONIC HEART</p>
+            <p class="text-[10px] text-sky-300">Jacket Image Frame</p>
+          </div>
+        </div>
+
+        <div class="flex-1 text-center md:text-left">
+          <span class="bg-amber-100 text-amber-600 font-bold text-xs px-3 py-1 rounded-full">NEW</span>
+          <h3 class="text-2xl md:text-3xl font-black text-sky-800 font-brand mt-2">ICONIC HEART [通常盤]</h3>
+          <p class="text-xs text-sky-500 font-bold mt-1">RELEASE SHOWCASE</p>
+          <p class="text-xs text-sky-700 leading-relaxed mt-4 bg-sky-50/60 p-4 rounded-xl border border-sky-100">
+            Hearts2Heartsの最新シングル『ICONIC HEART』。S2Uへ贈る明るくキュートなポップナンバー！
+          </p>
+          <div class="mt-6 flex flex-wrap gap-3 justify-center md:justify-start">
+            <button onclick="alert('DISCOGRAPHY詳細を表示します')" class="pill-btn px-6 py-2 rounded-full font-bold text-xs uppercase tracking-wider">
+              VIEW ALL ➔
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. PROFILE セクション (2行×4列) -->
+  <section id="profile" class="py-12 px-4 md:px-8 max-w-6xl mx-auto">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl md:text-4xl font-black text-sky-600 font-brand">Profile</h2>
+      <p class="text-xs text-sky-400 font-bold mt-1">Hearts2Hearts メンバープロフィール</p>
+    </div>
+
+    <!-- 2行 × 4列 グリッド -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6" id="profile-grid"></div>
+
+    <div class="text-center mt-8">
+      <button onclick="alert('全メンバープロフィールを表示します')" class="pill-btn px-8 py-2.5 rounded-full font-bold text-xs shadow-sm font-brand uppercase tracking-wider">
+        VIEW ALL ➔
+      </button>
+    </div>
+  </section>
+
+  <!-- 6. 管理者モード モーダル -->
+  <div id="admin-modal" class="fixed inset-0 bg-sky-950/40 z-50 flex items-center justify-center p-4 backdrop-blur-md hidden">
+    <div class="bg-white border-2 border-sky-200 rounded-3xl p-6 max-w-lg w-full shadow-2xl relative">
+      <div class="flex justify-between items-center mb-4 border-b border-sky-100 pb-3">
+        <h3 class="text-base font-bold text-sky-700 flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-sky-400"></i> 管理者ダッシュボード
+        </h3>
+        <button id="btn-close-admin" class="text-sky-400 hover:text-sky-600 font-bold text-lg">✕</button>
+      </div>
+
+      <!-- 認証フォーム -->
+      <div id="admin-login-view">
+        <p class="text-xs text-sky-500 mb-4">管理用パスワードを入力してください（初期パスワード: <code class="bg-sky-100 px-1 py-0.5 rounded text-sky-700 font-mono">admin123</code>）</p>
+        <input type="password" id="admin-pass" placeholder="パスワード" class="w-full px-4 py-2 text-sm border border-sky-200 rounded-xl mb-4 focus:outline-none focus:ring-2 focus:ring-sky-300">
+        <button id="btn-login-admin" class="w-full py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl text-xs transition">ログイン</button>
+      </div>
+
+      <!-- 管理投稿パネル -->
+      <div id="admin-panel-view" class="hidden">
+        <h4 class="text-xs font-bold text-sky-700 mb-3">＋ ニュースを手動で追加・更新</h4>
+        <div class="space-y-3 mb-4">
+          <input type="text" id="admin-news-title" placeholder="ニュースタイトル（例: 〇〇番組出演決定！）" class="w-full px-3 py-2 text-xs border border-sky-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-300">
+          <textarea id="admin-news-body" placeholder="詳細テキストや公式サイトリンクなど" rows="3" class="w-full px-3 py-2 text-xs border border-sky-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-300"></textarea>
+          <select id="admin-news-badge" class="w-full px-3 py-2 text-xs border border-sky-200 rounded-lg text-sky-700 font-bold">
+            <option value="NEW">NEW（新着）</option>
+            <option value="RELEASE">RELEASE（リリース情報）</option>
+            <option value="EVENT">EVENT（イベント・ライブ）</option>
+          </select>
+        </div>
+        <button id="btn-add-news" class="w-full py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl text-xs transition">トップ画面のニュースに反映 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. フッター -->
+  <footer class="bg-sky-100 border-t border-sky-200 py-10 px-4 text-center mt-auto">
+    <div class="max-w-4xl mx-auto space-y-6">
+      <h2 class="text-2xl font-black text-sky-500 font-brand tracking-wider">HEARTS2HEARTS</h2>
       
-      <div class="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 md:p-8">
-        <h3 class="text-xl font-bold text-pink-400 mb-4">タイトル曲: 『The Chase』 応援方法</h3>
-        <!-- YouTube動画埋め込み -->
-        <div class="aspect-video w-full rounded-xl overflow-hidden mb-6 bg-black">
-          <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Cheering Guide" frameborder="0" allowfullscreen></iframe>
-        </div>
-        <!-- カラーコード化された歌詞掛け声 -->
-        <div class="bg-black/50 p-4 rounded-xl text-sm leading-relaxed text-gray-300">
-          <p class="mb-2">Hearts2Hearts! <span class="cheer-highlight">(ハーツ・トゥ・ハーツ!)</span></p>
-          <p class="mb-2">Can you feel my rhythm now? <span class="cheer-highlight">(ジウ! カルメン! ユハ! ステラ!)</span></p>
-          <p class="mb-2">Every step we take together, <span class="cheer-highlight">(ジュウン! エイナ! イアン! イェオン!)</span></p>
-          <p>We are S2U forever! <span class="cheer-highlight">(H2H! 大好き!)</span></p>
-        </div>
+      <div class="flex flex-wrap justify-center gap-2 md:gap-3 text-xs font-bold text-sky-700">
+        <a href="#news" class="bg-white/80 px-3 py-1 rounded-full hover:bg-white transition">NEWS</a>
+        <a href="#movie" class="bg-white/80 px-3 py-1 rounded-full hover:bg-white transition">MOVIE</a>
+        <a href="#discography" class="bg-white/80 px-3 py-1 rounded-full hover:bg-white transition">DISCOGRAPHY</a>
+        <a href="#profile" class="bg-white/80 px-3 py-1 rounded-full hover:bg-white transition">PROFILE</a>
+        <a href="https://hearts2heartsofficial.jp/" target="_blank" class="bg-white/80 px-3 py-1 rounded-full hover:bg-white transition">FANCLUB</a>
       </div>
-    </div>
-  </section>
 
-  <!-- 4. ディスコグラフィー -->
-  <section id="discography" class="max-w-6xl mx-auto px-6 py-16">
-    <h2 class="text-3xl font-bold tracking-wider text-white mb-8">DISCOGRAPHY</h2>
-    <div class="grid md:grid-cols-3 gap-6">
-      <div class="bg-neutral-900 border border-neutral-800 p-6 rounded-xl">
-        <span class="text-xs text-pink-400 font-bold">1st Single Album</span>
-        <h3 class="text-xl font-bold text-white mt-1">The Chase</h3>
-        <p class="text-gray-500 text-xs mt-1">2025.02.24 Release</p>
+      <div class="flex justify-center gap-4 text-sky-600 text-lg">
+        <a href="https://hearts2heartsofficial.jp/" target="_blank" class="hover:text-sky-400 transition"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="https://hearts2heartsofficial.jp/" target="_blank" class="hover:text-sky-400 transition"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://hearts2heartsofficial.jp/" target="_blank" class="hover:text-sky-400 transition"><i class="fa-brands fa-tiktok"></i></a>
+        <a href="https://hearts2heartsofficial.jp/" target="_blank" class="hover:text-sky-400 transition"><i class="fa-brands fa-youtube"></i></a>
       </div>
-      <div class="bg-neutral-900 border border-neutral-800 p-6 rounded-xl">
-        <span class="text-xs text-pink-400 font-bold">1st Mini Album</span>
-        <h3 class="text-xl font-bold text-white mt-1">FOCUS</h3>
-        <p class="text-gray-500 text-xs mt-1">2025.10.20 Release</p>
-      </div>
-      <div class="bg-neutral-900 border border-neutral-800 p-6 rounded-xl">
-        <span class="text-xs text-pink-400 font-bold">2nd Mini Album</span>
-        <h3 class="text-xl font-bold text-white mt-1">Lemon Tang</h3>
-        <p class="text-gray-500 text-xs mt-1">2026.06.22 Release</p>
-      </div>
-    </div>
-  </section>
 
-  <!-- フッター -->
-  <footer class="mt-auto bg-neutral-950 border-t border-neutral-900 py-8 text-center text-xs text-gray-600">
-    <p>© 2026 Hearts2Hearts Unofficial Fan Site. Created by S2U.</p>
+      <p class="text-[11px] text-sky-400 font-bold">
+        © Hearts2Hearts Official Fan Site. Inspired by hearts2heartsofficial.jp
+      </p>
+    </div>
   </footer>
 
-  <!-- 制御JSスクリプト -->
-  <script>
-    // メンバーデータ
-    const members = [
-      { name: 'カルメン', enName: 'CARMEN', emoji: '🌴', color: 'border-pink-500' },
-      { name: 'ジウ', enName: 'JIWOO', emoji: '🍓', color: 'border-red-500' },
-      { name: 'ユハ', enName: 'YUHA', emoji: '🎀', color: 'border-purple-500' },
-      { name: 'ステラ', enName: 'STELLA', emoji: '🧁', color: 'border-blue-500' },
-      { name: 'ジュウン', enName: 'JUUN', emoji: '👾', color: 'border-green-500' },
-      { name: 'エイナ', enName: 'A-NA', emoji: '🌻', color: 'border-yellow-500' },
-      { name: 'イアン', enName: 'IAN', emoji: '🫛', color: 'border-teal-500' },
-      { name: 'イェオン', enName: 'YE-ON', emoji: '😊', color: 'border-orange-500' }
-    ];
-
-    // 多言語辞書
-    const i18nData = {
-      ja: {
-        'select-bias-title': 'あなたの推しメン（BIAS）を選択してください！',
-        'nav-members': 'MEMBERS',
-        'nav-cheer': '応援法',
-        'nav-disco': 'DISCOGRAPHY',
-        'next-bday': '次のメンバー誕生日まで'
-      },
-      en: {
-        'select-bias-title': 'Choose your BIAS to enter the site!',
-        'nav-members': 'MEMBERS',
-        'nav-cheer': 'CHEERING',
-        'nav-disco': 'DISCOGRAPHY',
-        'next-bday': 'Next Member Birthday In'
-      },
-      ko: {
-        'select-bias-title': '최애 멤버(BIAS)를 선택해주세요!',
-        'nav-members': 'MEMBERS',
-        'nav-cheer': '응원법',
-        'nav-disco': 'DISCOGRAPHY',
-        'next-bday': '다음 멤버 생日まで'
-      }
-    };
-
-    // 初期化：推しメン選択ボタンの生成
-    const biasOptions = document.getElementById('bias-options');
-    const memberCards = document.getElementById('member-cards');
-
-    members.forEach(m => {
-      // モーダル用ボタン
-      biasOptions.innerHTML += `
-        <button onclick="selectBias('${m.name}')" class="flex flex-col items-center justify-center p-3 bg-neutral-800 hover:bg-neutral-700 rounded-xl transition border border-neutral-700">
-          <span class="text-2xl">${m.emoji}</span>
-          <span class="text-xs font-bold text-white mt-1">${m.enName}</span>
-        </button>
-      `;
-      // メインカード
-      memberCards.innerHTML += `
-        <div class="bg-neutral-900 border border-neutral-800 p-4 rounded-2xl flex flex-col items-center text-center hover:border-pink-500/50 transition">
-          <div class="w-16 h-16 rounded-full bg-neutral-800 flex items-center justify-center text-3xl mb-3">${m.emoji}</div>
-          <h3 class="font-bold text-white">${m.name}</h3>
-          <span class="text-xs text-gray-500">${m.enName}</span>
-        </div>
-      `;
-    });
-
-    // 推しメン選択機能
-    function selectBias(name) {
-      localStorage.setItem('h2h_bias', name);
-      document.getElementById('bias-welcome-msg').innerText = `あなたの推しメン：${name} ✨ を全力で応援中！`;
-      closeModal();
-    }
-
-    function closeModal() {
-      document.getElementById('bias-modal').classList.add('hidden');
-    }
-
-    // 多言語切替機能
-    function changeLanguage(lang) {
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (i18nData[lang] && i18nData[lang][key]) {
-          el.innerText = i18nData[lang][key];
-        }
-      });
-    }
-
-    // タイマー（擬似）
-    setInterval(() => {
-      const now = new Date();
-      document.getElementById('bday-timer').innerText = `12日 04時間 15分 ${60 - now.getSeconds()}秒`;
-    }, 1000);
-
-    // 初回訪問チェック
-    window.onload = () => {
-      const savedBias = localStorage.getItem('h2h_bias');
-      if (savedBias) {
-        document.getElementById('bias-modal').classList.add('hidden');
-        document.getElementById('bias-welcome-msg').innerText = `あなたの推しメン：${savedBias} ✨ を全力で応援中！`;
-      }
-    };
-  </script>
+  <!-- カスタムJavaScript -->
+  <script src="script.js"></script>
 </body>
 </html>
