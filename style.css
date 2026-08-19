@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=M+PLUS+Rounded+1c:wght@500;700;800&family=Outfit:wght@600;800;900&display=swap');
+
+/* ベース設定 */
+html {
+  scroll-behavior: smooth;
+}
+
+body { 
+  font-family: 'M PLUS Rounded 1c', sans-serif; 
+  background-color: #f0f8ff;
+  color: #1e3a8a;
+}
+
+.font-brand {
+  font-family: 'Outfit', 'Fredoka', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* 公式風ドット背景パターン */
+.bg-pattern-news {
+  background-color: #9fe5ff;
+  background-image: radial-gradient(#ffffff 22%, transparent 22%);
+  background-size: 16px 16px;
+}
+
+/* グラデーションヘッダー */
+.bg-gradient-header {
+  background: linear-gradient(180deg, #e0f2fe 0%, #f0f8ff 100%);
+}
+
+/* 水色カードシャドウ */
+.card-shadow {
+  box-shadow: 0 10px 25px -5px rgba(186, 230, 253, 0.5), 0 8px 10px -6px rgba(186, 230, 253, 0.3);
+}
+
+/* 丸型ボタン（Pill Button）スタイル */
+.pill-btn {
+  background-color: #ffffff;
+  color: #0284c7;
+  border: 2px solid #bae6fd;
+  transition: all 0.2s ease-in-out;
+}
+
+.pill-btn:hover {
+  background-color: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  transform: translateY(-1px);
+}
